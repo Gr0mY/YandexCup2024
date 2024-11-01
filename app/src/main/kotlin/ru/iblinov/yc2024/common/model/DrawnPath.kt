@@ -17,3 +17,8 @@ class DrawnPath(
         )
     }
 }
+
+class DrawnPathsPair(
+    val drawnPaths: MutableList<DrawnPath>,
+    val deletedDrawnPaths: MutableList<DrawnPath>,
+)

@@ -20,7 +20,7 @@ object MainReducer {
         )
     )
 
-    fun MainState.binButtonClicked() = copy(
+    fun MainState.clearCancelRedoButtons() = copy(
         drawingToolbarButtons = drawingToolbarButtons.copy(
             isCancelButtonActive = false,
             isRedoButtonActive = false,

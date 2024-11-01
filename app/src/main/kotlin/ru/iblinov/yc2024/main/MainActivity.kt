@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
             val state by viewModel.state.collectAsStateWithLifecycle()
             MainScreenContent(
                 state = state,
-                drawnPaths = viewModel.drawnPaths,
+                drawnPaths = { viewModel.drawnPaths },
                 onAction = viewModel::onAction,
             )
         }

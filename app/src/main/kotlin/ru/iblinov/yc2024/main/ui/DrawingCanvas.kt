@@ -34,7 +34,7 @@ import ru.iblinov.yc2024.main.mvi.MainAction
 
 @Composable
 fun ColumnScope.DrawingCanvas(
-    drawnPaths: MutableList<DrawnPath>,
+    drawnPaths: () -> MutableList<DrawnPath>,
     color: Color,
     counterHack: MutableLongState,
     onAction: (MainAction) -> Unit,
@@ -44,6 +44,7 @@ fun ColumnScope.DrawingCanvas(
     val pathStroke = remember { Stroke(width = 10f) }
 
     val updatedColor = rememberUpdatedState(color)
+    val updatedDrawnPaths = rememberUpdatedState(drawnPaths)
 
     Box(
         Modifier
@@ -59,7 +60,7 @@ fun ColumnScope.DrawingCanvas(
                             path = Path().apply { moveTo(it.x, it.y) },
                             color = updatedColor.value
                         )
-                        drawnPaths += currentDrawnPath
+                        updatedDrawnPaths.value() += currentDrawnPath
 
                         counterHack.longValue++
                     }
@@ -81,21 +82,23 @@ fun ColumnScope.DrawingCanvas(
 
                 drawContent()
 
-                drawnPaths.forEach {
-                    drawPoints(
-                        points = it.startPointAsList,
-                        pointMode = PointMode.Points,
-                        cap = StrokeCap.Round,
-                        color = it.color,
-                        strokeWidth = 10f,
-                    )
+                updatedDrawnPaths
+                    .value()
+                    .forEach {
+                        drawPoints(
+                            points = it.startPointAsList,
+                            pointMode = PointMode.Points,
+                            cap = StrokeCap.Round,
+                            color = it.color,
+                            strokeWidth = 10f,
+                        )
 
-                    drawPath(
-                        path = it.path,
-                        color = it.color,
-                        style = pathStroke
-                    )
-                }
+                        drawPath(
+                            path = it.path,
+                            color = it.color,
+                            style = pathStroke
+                        )
+                    }
             }
     ) {
         Image(

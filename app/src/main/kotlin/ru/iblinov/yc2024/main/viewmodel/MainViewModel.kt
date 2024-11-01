@@ -6,12 +6,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import ru.iblinov.yc2024.common.model.DrawnPath
+import ru.iblinov.yc2024.common.model.DrawnPathsPair
 import ru.iblinov.yc2024.main.mvi.MainAction
 import ru.iblinov.yc2024.main.mvi.MainState
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.additionalColorsClicked
-import ru.iblinov.yc2024.main.viewmodel.MainReducer.binButtonClicked
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.cancelButtonClicked
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.chooseColorClicked
+import ru.iblinov.yc2024.main.viewmodel.MainReducer.clearCancelRedoButtons
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.closePalette
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.colorChosen
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.onDragEnd
@@ -23,8 +24,16 @@ class MainViewModel : ViewModel() {
     val state: StateFlow<MainState>
         get() = mutableState.asStateFlow()
 
-    val drawnPaths = mutableListOf<DrawnPath>()
-    private val deletedDrawnPaths = mutableListOf<DrawnPath>()
+    private val allDrawnPathsPairs: MutableList<DrawnPathsPair> =
+        mutableListOf(createDrawnPathsPair())
+
+    private var currentPage = 0
+
+    val drawnPaths: MutableList<DrawnPath>
+        get() = allDrawnPathsPairs[currentPage].drawnPaths
+
+    private val deletedDrawnPaths: MutableList<DrawnPath>
+        get() = allDrawnPathsPairs[currentPage].deletedDrawnPaths
 
     fun onAction(action: MainAction) = when (action) {
         MainAction.CancelButtonClicked -> cancelButtonClicked()
@@ -72,12 +81,18 @@ class MainViewModel : ViewModel() {
 
         updateState {
             updateSignal()
-                .binButtonClicked()
+                .clearCancelRedoButtons()
         }
     }
 
     private fun filePlusButtonClicked() {
-        // todo добавить список drawnPaths и deletedDrawnPaths
+        allDrawnPathsPairs += createDrawnPathsPair()
+        currentPage++
+
+        updateState {
+            updateSignal()
+                .clearCancelRedoButtons()
+        }
     }
 
     private fun onDragEnd() {
@@ -92,4 +107,9 @@ class MainViewModel : ViewModel() {
     private fun updateState(body: MainState.() -> MainState) = mutableState.update(body)
 
     private fun MainState.updateSignal() = copy(updateCanvasSignal = updateCanvasSignal.inc())
+
+    private fun createDrawnPathsPair() = DrawnPathsPair(
+        drawnPaths = mutableListOf(),
+        deletedDrawnPaths = mutableListOf()
+    )
 }

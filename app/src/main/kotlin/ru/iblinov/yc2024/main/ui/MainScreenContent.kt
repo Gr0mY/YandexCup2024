@@ -18,7 +18,7 @@ import ru.iblinov.yc2024.main.mvi.MainState
 @Composable
 fun MainScreenContent(
     state: MainState,
-    drawnPaths: MutableList<DrawnPath>,
+    drawnPaths: () -> MutableList<DrawnPath>,
     onAction: (MainAction) -> Unit,
 ) {
     LivePicturesTheme {
