@@ -1,5 +1,6 @@
 package ru.iblinov.yc2024.main.viewmodel
 
+import androidx.compose.ui.graphics.Color
 import ru.iblinov.yc2024.common.model.DrawnPath
 import ru.iblinov.yc2024.main.mvi.MainState
 
@@ -30,6 +31,32 @@ object MainReducer {
         drawingToolbarButtons = drawingToolbarButtons.copy(
             isCancelButtonActive = true,
             isRedoButtonActive = false,
+        )
+    )
+
+    fun MainState.chooseColorClicked() = copy(
+        palette = palette.copy(
+            areCommonColorsVisible = !palette.areCommonColorsVisible,
+            areAdditionalColorsVisible = false,
+        )
+    )
+
+    fun MainState.additionalColorsClicked() = copy(
+        palette = palette.copy(
+            areAdditionalColorsVisible = !palette.areAdditionalColorsVisible
+        )
+    )
+
+    fun MainState.colorChosen(color: Color) = copy(
+        palette = palette.copy(
+            selectedColor = color,
+        )
+    )
+
+    fun MainState.closePalette() = copy(
+        palette = palette.copy(
+            areCommonColorsVisible = false,
+            areAdditionalColorsVisible = false,
         )
     )
 }

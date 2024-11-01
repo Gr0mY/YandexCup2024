@@ -8,8 +8,12 @@ import kotlinx.coroutines.flow.update
 import ru.iblinov.yc2024.common.model.DrawnPath
 import ru.iblinov.yc2024.main.mvi.MainAction
 import ru.iblinov.yc2024.main.mvi.MainState
+import ru.iblinov.yc2024.main.viewmodel.MainReducer.additionalColorsClicked
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.binButtonClicked
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.cancelButtonClicked
+import ru.iblinov.yc2024.main.viewmodel.MainReducer.chooseColorClicked
+import ru.iblinov.yc2024.main.viewmodel.MainReducer.closePalette
+import ru.iblinov.yc2024.main.viewmodel.MainReducer.colorChosen
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.onDragEnd
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.redoButtonClicked
 
@@ -22,7 +26,7 @@ class MainViewModel : ViewModel() {
     val drawnPaths = mutableListOf<DrawnPath>()
     private val deletedDrawnPaths = mutableListOf<DrawnPath>()
 
-    fun onAction(action: MainAction): Any = when (action) {
+    fun onAction(action: MainAction) = when (action) {
         MainAction.CancelButtonClicked -> cancelButtonClicked()
         MainAction.RedoButtonClicked -> redoButtonClicked()
         MainAction.BinButtonClicked -> binButtonClicked()
@@ -31,6 +35,14 @@ class MainViewModel : ViewModel() {
         MainAction.PauseButtonClicked -> {}
         MainAction.PlayButtonClicked -> {}
         MainAction.OnDragEnd -> onDragEnd()
+        is MainAction.Palette -> onAction(action)
+    }
+
+    private fun onAction(action: MainAction.Palette) = when (action) {
+        MainAction.Palette.ChooseColorClicked -> updateState { chooseColorClicked() }
+        MainAction.Palette.AdditionalColorsClicked -> updateState { additionalColorsClicked() }
+        is MainAction.Palette.ColorChosen -> updateState { closePalette().colorChosen(action.color) }
+        MainAction.Palette.OutlineClicked -> updateState { closePalette() }
     }
 
     private fun cancelButtonClicked() {
