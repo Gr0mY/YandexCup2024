@@ -24,6 +24,11 @@ fun SpacerHeight8() {
 }
 
 @Composable
+fun SpacerHeight16() {
+    Spacer(Modifier.height(16.dp))
+}
+
+@Composable
 fun RowScope.SpacerWeight1() {
     Spacer(Modifier.weight(1f))
 }

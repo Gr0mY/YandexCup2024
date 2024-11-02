@@ -91,4 +91,22 @@ object MainReducer {
         ),
         areNonPlayingButtonsActive = true,
     )
+
+    fun MainState.chooseSpeedShown() = copy(
+        speed = speed.copy(
+            isChooseSpeedVisible = true
+        )
+    )
+
+    fun MainState.chooseSpeedHidden() = copy(
+        speed = speed.copy(
+            isChooseSpeedVisible = false
+        )
+    )
+
+    fun MainState.speedIndex(index: Int) = copy(
+        speed = speed.copy(
+            selectedStepIndex = index
+        )
+    )
 }

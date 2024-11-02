@@ -7,7 +7,7 @@ data class MainState(
     val drawingToolbarButtons: DrawingToolbarButtons = DrawingToolbarButtons(),
     val updateCanvasSignal: Long = Long.MIN_VALUE,
     val palette: Palette = Palette(),
-    val playingFps: Int = INITIAL_FPS,
+    val speed: Speed = Speed(),
     val areNonPlayingButtonsActive: Boolean = true,
 ) {
     data class DrawingToolbarButtons(
@@ -25,28 +25,39 @@ data class MainState(
         val areAdditionalColorsVisible: Boolean = false,
     )
 
+    data class Speed(
+        val isChooseSpeedVisible: Boolean = false,
+        val steps: List<Int> = availableFpsList,
+        val selectedStepIndex: Int = steps.lastIndex - 1,
+    ) {
+        val playingFps: Int = steps[selectedStepIndex]
+    }
+
     companion object {
-        private const val INITIAL_FPS = 30
+        private val availableFpsList = listOf(1, 2, 4, 8, 10, 20, 30, 60)
     }
 }
 
 sealed interface MainAction {
 
-    data object CancelButtonClicked : MainAction
-
-    data object RedoButtonClicked : MainAction
-
-    data object BinButtonClicked : MainAction
-
-    data object FilePlusButtonClicked : MainAction
-
-    data object LayersButtonClicked : MainAction
-
-    data object PauseButtonClicked : MainAction
-
-    data object PlayButtonClicked : MainAction
-
     data object OnDragEnd : MainAction
+
+    sealed interface DrawingToolbar : MainAction {
+
+        data object CancelButtonClicked : DrawingToolbar
+
+        data object RedoButtonClicked : DrawingToolbar
+
+        data object BinButtonClicked : DrawingToolbar
+
+        data object FilePlusButtonClicked : DrawingToolbar
+
+        data object LayersButtonClicked : DrawingToolbar
+
+        data object SpeedClicked : DrawingToolbar
+
+        data object PlayPauseButtonClicked : DrawingToolbar
+    }
 
     sealed interface Palette : MainAction {
 
@@ -59,5 +70,14 @@ sealed interface MainAction {
         data class ColorChosen(
             val color: Color
         ) : Palette
+    }
+
+    sealed interface ChooseSpeed : MainAction {
+
+        data object Dismissed : ChooseSpeed
+
+        data class StepIndexChosen(
+            val index: Int,
+        ) : ChooseSpeed
     }
 }

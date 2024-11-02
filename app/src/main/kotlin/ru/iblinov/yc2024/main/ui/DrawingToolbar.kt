@@ -36,16 +36,20 @@ fun DrawingToolbar(
         )
 
         SpacerWeight1()
-        DrawingToolbarCenterButtons(areNonPlayingButtonsActive, onAction)
+        DrawingToolbarCenterButtons(
+            areNonPlayingButtonsActive = areNonPlayingButtonsActive,
+            onAction = onAction
+        )
         SpacerWeight1()
 
-        PauseButton(
-            isPauseButtonActive = buttons.isPauseButtonActive,
+        SpeedButton(
+            isActive = areNonPlayingButtonsActive,
             onAction = onAction
         )
         SpacerWidth16()
-        PlayButton(
+        PlayPauseButton(
             isPlayButtonActive = buttons.isPlayButtonActive,
+            isPauseButtonActive = buttons.isPauseButtonActive,
             onAction = onAction
         )
     }
@@ -61,7 +65,7 @@ private fun CancelButton(
         drawableRes = R.drawable.property_1_right_active,
         // todo to res
         contentDescription = "Отменить",
-        onClick = { onAction(MainAction.CancelButtonClicked) },
+        onClick = { onAction(MainAction.DrawingToolbar.CancelButtonClicked) },
     )
 }
 
@@ -75,7 +79,7 @@ private fun RedoButton(
         drawableRes = R.drawable.property_1_left_active,
         // todo to res
         contentDescription = "Повторить",
-        onClick = { onAction(MainAction.RedoButtonClicked) },
+        onClick = { onAction(MainAction.DrawingToolbar.RedoButtonClicked) },
     )
 }
 
@@ -89,7 +93,7 @@ private fun DrawingToolbarCenterButtons(
         drawableRes = R.drawable.bin,
         // todo to res
         contentDescription = "Удалить кадр",
-        onClick = { onAction(MainAction.BinButtonClicked) },
+        onClick = { onAction(MainAction.DrawingToolbar.BinButtonClicked) },
     )
 
     SpacerWidth16()
@@ -99,7 +103,7 @@ private fun DrawingToolbarCenterButtons(
         drawableRes = R.drawable.file_plus,
         // todo to res
         contentDescription = "Создать кадр",
-        onClick = { onAction(MainAction.FilePlusButtonClicked) },
+        onClick = { onAction(MainAction.DrawingToolbar.FilePlusButtonClicked) },
     )
 
     SpacerWidth16()
@@ -109,35 +113,39 @@ private fun DrawingToolbarCenterButtons(
         drawableRes = R.drawable.layers,
         // todo to res
         contentDescription = "Слои",
-        onClick = { onAction(MainAction.LayersButtonClicked) },
+        onClick = { onAction(MainAction.DrawingToolbar.LayersButtonClicked) },
     )
 }
 
 @Composable
-private fun PauseButton(
+private fun SpeedButton(
+    isActive: Boolean,
+    onAction: (MainAction) -> Unit,
+) {
+    AppIconButton(
+        isActive = isActive,
+        drawableRes = R.drawable.baseline_speed_32,
+        // todo to res
+        contentDescription = "Скорость воспроизведения",
+        onClick = { onAction(MainAction.DrawingToolbar.SpeedClicked) },
+    )
+}
+
+@Composable
+private fun PlayPauseButton(
+    isPlayButtonActive: Boolean,
     isPauseButtonActive: Boolean,
     onAction: (MainAction) -> Unit,
 ) {
     AppIconButton(
-        isActive = isPauseButtonActive,
-        drawableRes = R.drawable.property_1_active_1,
-        // todo to res
-        contentDescription = "Остановить",
-        onClick = { onAction(MainAction.PauseButtonClicked) },
-    )
-}
-
-@Composable
-private fun PlayButton(
-    isPlayButtonActive: Boolean,
-    onAction: (MainAction) -> Unit,
-) {
-    AppIconButton(
-        isActive = isPlayButtonActive,
-        drawableRes = R.drawable.property_1_active,
+        isActive = isPlayButtonActive || isPauseButtonActive,
+        drawableRes = when {
+            isPauseButtonActive -> R.drawable.property_1_active_1
+            else -> R.drawable.property_1_active
+        },
         // todo to res
         contentDescription = "Запустить",
-        onClick = { onAction(MainAction.PlayButtonClicked) },
+        onClick = { onAction(MainAction.DrawingToolbar.PlayPauseButtonClicked) },
     )
 }
 

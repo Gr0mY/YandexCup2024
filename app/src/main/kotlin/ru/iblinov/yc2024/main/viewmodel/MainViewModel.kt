@@ -18,11 +18,14 @@ import ru.iblinov.yc2024.main.viewmodel.MainReducer.activePlaying
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.additionalColorsClicked
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.cancelButtonClicked
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.chooseColorClicked
+import ru.iblinov.yc2024.main.viewmodel.MainReducer.chooseSpeedHidden
+import ru.iblinov.yc2024.main.viewmodel.MainReducer.chooseSpeedShown
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.clearCancelRedoButtons
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.closePalette
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.colorChosen
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.onDragEnd
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.redoButtonClicked
+import ru.iblinov.yc2024.main.viewmodel.MainReducer.speedIndex
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.stoppedPlaying
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.updateCancelRedoButtons
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.updatePlayButton
@@ -48,15 +51,20 @@ class MainViewModel : ViewModel() {
     private var playingJob: Job? = null
 
     fun onAction(action: MainAction) = when (action) {
-        MainAction.CancelButtonClicked -> cancelButtonClicked()
-        MainAction.RedoButtonClicked -> redoButtonClicked()
-        MainAction.BinButtonClicked -> binButtonClicked()
-        MainAction.FilePlusButtonClicked -> filePlusButtonClicked()
-        MainAction.LayersButtonClicked -> {}
-        MainAction.PauseButtonClicked -> stopPlaying()
-        MainAction.PlayButtonClicked -> startPlaying()
+        is MainAction.DrawingToolbar -> onAction(action)
         MainAction.OnDragEnd -> onDragEnd()
         is MainAction.Palette -> onAction(action)
+        is MainAction.ChooseSpeed -> onAction(action)
+    }
+
+    private fun onAction(action: MainAction.DrawingToolbar) = when (action) {
+        MainAction.DrawingToolbar.CancelButtonClicked -> cancelButtonClicked()
+        MainAction.DrawingToolbar.RedoButtonClicked -> redoButtonClicked()
+        MainAction.DrawingToolbar.BinButtonClicked -> binButtonClicked()
+        MainAction.DrawingToolbar.FilePlusButtonClicked -> filePlusButtonClicked()
+        MainAction.DrawingToolbar.LayersButtonClicked -> {}
+        MainAction.DrawingToolbar.PlayPauseButtonClicked -> startOrStopPlaying()
+        MainAction.DrawingToolbar.SpeedClicked -> updateState { chooseSpeedShown() }
     }
 
     private fun onAction(action: MainAction.Palette) = when (action) {
@@ -64,6 +72,11 @@ class MainViewModel : ViewModel() {
         MainAction.Palette.AdditionalColorsClicked -> updateState { additionalColorsClicked() }
         is MainAction.Palette.ColorChosen -> updateState { closePalette().colorChosen(action.color) }
         MainAction.Palette.OutlineClicked -> updateState { closePalette() }
+    }
+
+    private fun onAction(action: MainAction.ChooseSpeed) = when (action) {
+        is MainAction.ChooseSpeed.StepIndexChosen -> updateState { speedIndex(action.index) }
+        MainAction.ChooseSpeed.Dismissed -> updateState { chooseSpeedHidden() }
     }
 
     private fun cancelButtonClicked() {
@@ -126,12 +139,20 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    private fun startPlaying() {
+    private fun startOrStopPlaying() {
+        val job = playingJob
+        if (job != null) {
+            job.cancel()
+            playingJob = null
+            updateState { stoppedPlaying() }
+            return
+        }
+
         playingJob = viewModelScope.launch {
             val savedPage = currentPage
             updateState { activePlaying() }
             try {
-                val timeForOneFrame = millisInSecond / state.value.playingFps
+                val timeForOneFrame = millisInSecond / state.value.speed.playingFps
                 while (true) {
                     delay(timeForOneFrame)
 
@@ -145,11 +166,6 @@ class MainViewModel : ViewModel() {
                 updateState { updateSignal() }
             }
         }
-    }
-
-    private fun stopPlaying() {
-        playingJob?.cancel()
-        updateState { stoppedPlaying() }
     }
 
     private fun isPlayButtonActive() = allFramesData.size > 1
