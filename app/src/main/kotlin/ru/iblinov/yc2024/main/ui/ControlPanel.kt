@@ -19,6 +19,7 @@ import ru.iblinov.yc2024.main.mvi.MainAction
 @Composable
 fun ControlPanel(
     currentColor: Color,
+    areNonPlayingButtonsActive: Boolean,
     getTopOfControlPanel: (Float) -> Unit,
     onAction: (MainAction) -> Unit,
 ) {
@@ -34,12 +35,13 @@ fun ControlPanel(
             alignment = Alignment.CenterHorizontally
         ),
     ) {
-        PencilButton()
-        BrushButton()
-        EraseButton()
-        InstrumentsButton()
+        PencilButton(areNonPlayingButtonsActive)
+        BrushButton(areNonPlayingButtonsActive)
+        EraseButton(areNonPlayingButtonsActive)
+        InstrumentsButton(areNonPlayingButtonsActive)
         ColorButton(
             color = currentColor,
+            isActive = areNonPlayingButtonsActive,
             borderColor = AppColors.GreenSelected,
             onAction = onAction
         )
@@ -47,8 +49,9 @@ fun ControlPanel(
 }
 
 @Composable
-private fun PencilButton() {
+private fun PencilButton(isActive: Boolean) {
     AppIconButton(
+        isActive = isActive,
         drawableRes = R.drawable.pencil__edit__create,
         // todo to res
         contentDescription = "Карандаш",
@@ -58,8 +61,9 @@ private fun PencilButton() {
 }
 
 @Composable
-private fun BrushButton() {
+private fun BrushButton(isActive: Boolean) {
     AppIconButton(
+        isActive = isActive,
         drawableRes = R.drawable.brush__edit__create,
         // todo to res
         contentDescription = "Кисть",
@@ -69,8 +73,9 @@ private fun BrushButton() {
 }
 
 @Composable
-private fun EraseButton() {
+private fun EraseButton(isActive: Boolean) {
     AppIconButton(
+        isActive = isActive,
         drawableRes = R.drawable.erase,
         // todo to res
         contentDescription = "Ластик",
@@ -80,8 +85,9 @@ private fun EraseButton() {
 }
 
 @Composable
-private fun InstrumentsButton() {
+private fun InstrumentsButton(isActive: Boolean) {
     AppIconButton(
+        isActive = isActive,
         drawableRes = R.drawable.instruments,
         // todo to res
         contentDescription = "Инструменты",

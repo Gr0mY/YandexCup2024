@@ -23,6 +23,7 @@ import ru.iblinov.yc2024.main.mvi.MainAction
 fun ColorButton(
     color: Color,
     borderColor: Color = Color.Transparent,
+    isActive: Boolean = true,
     onAction: (MainAction) -> Unit
 ) {
     Box(
@@ -32,7 +33,7 @@ fun ColorButton(
             .clip(CircleShape)
             .background(color)
             .border(1.5.dp, borderColor, CircleShape)
-            .clickable { onAction(MainAction.Palette.ChooseColorClicked) }
+            .clickable(isActive) { onAction(MainAction.Palette.ChooseColorClicked) }
     )
 }
 

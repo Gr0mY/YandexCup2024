@@ -32,7 +32,11 @@ fun MainScreenContent(
             ) {
                 val counterHack = remember { mutableLongStateOf(Long.MIN_VALUE) }
 
-                DrawingToolbar(state.drawingToolbarButtons, onAction)
+                DrawingToolbar(
+                    buttons = state.drawingToolbarButtons,
+                    areNonPlayingButtonsActive = state.areNonPlayingButtonsActive,
+                    onAction = onAction
+                )
                 DrawingCanvas(
                     drawnPaths = drawnPaths,
                     color = state.palette.selectedColor,
@@ -41,6 +45,7 @@ fun MainScreenContent(
                 )
                 ControlPanel(
                     currentColor = state.palette.selectedColor,
+                    areNonPlayingButtonsActive = state.areNonPlayingButtonsActive,
                     getTopOfControlPanel = { topOfControlPanel.floatValue = it },
                     onAction = onAction
                 )

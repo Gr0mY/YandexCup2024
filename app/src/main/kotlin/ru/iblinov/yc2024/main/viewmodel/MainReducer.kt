@@ -27,6 +27,22 @@ object MainReducer {
         )
     )
 
+    fun MainState.updatePlayButton(isActive: Boolean) = copy(
+        drawingToolbarButtons = drawingToolbarButtons.copy(
+            isPlayButtonActive = isActive
+        )
+    )
+
+    fun MainState.updateCancelRedoButtons(
+        isCancelButtonActive: Boolean,
+        isRedoButtonActive: Boolean,
+    ) = copy(
+        drawingToolbarButtons = drawingToolbarButtons.copy(
+            isCancelButtonActive = isCancelButtonActive,
+            isRedoButtonActive = isRedoButtonActive,
+        )
+    )
+
     fun MainState.onDragEnd() = copy(
         drawingToolbarButtons = drawingToolbarButtons.copy(
             isCancelButtonActive = true,
@@ -58,5 +74,21 @@ object MainReducer {
             areCommonColorsVisible = false,
             areAdditionalColorsVisible = false,
         )
+    )
+
+    fun MainState.activePlaying() = copy(
+        drawingToolbarButtons = drawingToolbarButtons.copy(
+            isPlayButtonActive = false,
+            isPauseButtonActive = true,
+        ),
+        areNonPlayingButtonsActive = false,
+    )
+
+    fun MainState.stoppedPlaying() = copy(
+        drawingToolbarButtons = drawingToolbarButtons.copy(
+            isPlayButtonActive = true,
+            isPauseButtonActive = false,
+        ),
+        areNonPlayingButtonsActive = true,
     )
 }

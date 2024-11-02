@@ -17,24 +17,37 @@ val drawingToolbarModifier = Modifier
 
 @Composable
 fun DrawingToolbar(
-    drawingToolbarButtons: MainState.DrawingToolbarButtons,
+    buttons: MainState.DrawingToolbarButtons,
+    areNonPlayingButtonsActive: Boolean,
     onAction: (MainAction) -> Unit,
 ) {
     Row(
         modifier = drawingToolbarModifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CancelButton(drawingToolbarButtons.isCancelButtonActive, onAction)
+        CancelButton(
+            isCancelButtonActive = buttons.isCancelButtonActive && areNonPlayingButtonsActive,
+            onAction = onAction
+        )
         SpacerWidth8()
-        RedoButton(drawingToolbarButtons.isRedoButtonActive, onAction)
+        RedoButton(
+            isRedoButtonActive = buttons.isRedoButtonActive && areNonPlayingButtonsActive,
+            onAction = onAction
+        )
 
         SpacerWeight1()
-        DrawingToolbarCenterButtons(onAction)
+        DrawingToolbarCenterButtons(areNonPlayingButtonsActive, onAction)
         SpacerWeight1()
 
-        PauseButton(drawingToolbarButtons.isPauseButtonActive, onAction)
+        PauseButton(
+            isPauseButtonActive = buttons.isPauseButtonActive,
+            onAction = onAction
+        )
         SpacerWidth16()
-        PlayButton(drawingToolbarButtons.isPlayButtonActive, onAction)
+        PlayButton(
+            isPlayButtonActive = buttons.isPlayButtonActive,
+            onAction = onAction
+        )
     }
 }
 
@@ -68,9 +81,11 @@ private fun RedoButton(
 
 @Composable
 private fun DrawingToolbarCenterButtons(
+    areNonPlayingButtonsActive: Boolean,
     onAction: (MainAction) -> Unit,
 ) {
     AppIconButton(
+        isActive = areNonPlayingButtonsActive,
         drawableRes = R.drawable.bin,
         // todo to res
         contentDescription = "Удалить кадр",
@@ -80,6 +95,7 @@ private fun DrawingToolbarCenterButtons(
     SpacerWidth16()
 
     AppIconButton(
+        isActive = areNonPlayingButtonsActive,
         drawableRes = R.drawable.file_plus,
         // todo to res
         contentDescription = "Создать кадр",
@@ -89,6 +105,7 @@ private fun DrawingToolbarCenterButtons(
     SpacerWidth16()
 
     AppIconButton(
+        isActive = areNonPlayingButtonsActive,
         drawableRes = R.drawable.layers,
         // todo to res
         contentDescription = "Слои",

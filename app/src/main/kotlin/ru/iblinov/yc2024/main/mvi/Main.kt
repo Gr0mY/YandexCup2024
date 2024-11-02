@@ -7,6 +7,8 @@ data class MainState(
     val drawingToolbarButtons: DrawingToolbarButtons = DrawingToolbarButtons(),
     val updateCanvasSignal: Long = Long.MIN_VALUE,
     val palette: Palette = Palette(),
+    val playingFps: Int = INITIAL_FPS,
+    val areNonPlayingButtonsActive: Boolean = true,
 ) {
     data class DrawingToolbarButtons(
         val isCancelButtonActive: Boolean = false,
@@ -22,6 +24,10 @@ data class MainState(
         val areCommonColorsVisible: Boolean = false,
         val areAdditionalColorsVisible: Boolean = false,
     )
+
+    companion object {
+        private const val INITIAL_FPS = 30
+    }
 }
 
 sealed interface MainAction {
