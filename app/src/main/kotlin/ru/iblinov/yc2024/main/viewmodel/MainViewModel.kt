@@ -2,7 +2,6 @@ package ru.iblinov.yc2024.main.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,6 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.iblinov.yc2024.common.model.DrawnPath
 import ru.iblinov.yc2024.common.model.FrameData
+import ru.iblinov.yc2024.common.model.NonEmptyFramesCollection
 import ru.iblinov.yc2024.main.mvi.MainAction
 import ru.iblinov.yc2024.main.mvi.MainState
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.activePlaying
@@ -37,16 +37,13 @@ class MainViewModel : ViewModel() {
     val state: StateFlow<MainState>
         get() = mutableState.asStateFlow()
 
-    private val allFramesData: MutableList<FrameData> =
-        mutableListOf(createFrameData())
-
-    private var currentPage = 0
+    private val allFramesData = NonEmptyFramesCollection(createFrameData())
 
     val drawnPaths: MutableList<DrawnPath>
-        get() = allFramesData[currentPage].drawnPaths
+        get() = allFramesData.getCurrentNode().value.drawnPaths
 
     private val deletedDrawnPaths: MutableList<DrawnPath>
-        get() = allFramesData[currentPage].deletedDrawnPaths
+        get() = allFramesData.getCurrentNode().value.deletedDrawnPaths
 
     private var playingJob: Job? = null
 
@@ -101,13 +98,7 @@ class MainViewModel : ViewModel() {
     }
 
     private fun binButtonClicked() {
-        allFramesData.removeAt(currentPage)
-        if (allFramesData.isEmpty()) {
-            allFramesData += createFrameData()
-            currentPage = 0
-        } else {
-            currentPage--
-        }
+        allFramesData.removeCurrent { createFrameData() }
 
         updateState {
             updateSignal()
@@ -120,7 +111,7 @@ class MainViewModel : ViewModel() {
     }
 
     private fun filePlusButtonClicked() {
-        allFramesData.add(++currentPage, createFrameData())
+        allFramesData.add(createFrameData())
 
         updateState {
             updateSignal()
@@ -149,26 +140,26 @@ class MainViewModel : ViewModel() {
         }
 
         playingJob = viewModelScope.launch {
-            val savedPage = currentPage
             updateState { activePlaying() }
-            try {
+            allFramesData.withSavedNode(
+                onFinally = { updateState { updateSignal() } }
+            ) {
                 val timeForOneFrame = millisInSecond / state.value.speed.playingFps
+
+                allFramesData.updateToFirst()
+                updateState { updateSignal() }
+
                 while (true) {
                     delay(timeForOneFrame)
 
-                    val newPage = currentPage + 1
-                    currentPage = if (newPage > allFramesData.lastIndex) 0 else newPage
-
+                    allFramesData.updateToNextOrFirst()
                     updateState { updateSignal() }
                 }
-            } catch (t: CancellationException) {
-                currentPage = savedPage
-                updateState { updateSignal() }
             }
         }
     }
 
-    private fun isPlayButtonActive() = allFramesData.size > 1
+    private fun isPlayButtonActive() = allFramesData.hasMoreThanOneNode()
 
     private fun updateState(body: MainState.() -> MainState) = mutableState.update(body)
 

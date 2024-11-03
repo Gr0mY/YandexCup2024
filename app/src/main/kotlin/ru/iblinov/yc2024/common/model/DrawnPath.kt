@@ -17,8 +17,3 @@ class DrawnPath(
         )
     }
 }
-
-class FrameData(
-    val drawnPaths: MutableList<DrawnPath>,
-    val deletedDrawnPaths: MutableList<DrawnPath>,
-)
