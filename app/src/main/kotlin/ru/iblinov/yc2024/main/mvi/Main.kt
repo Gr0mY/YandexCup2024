@@ -2,6 +2,7 @@ package ru.iblinov.yc2024.main.mvi
 
 import androidx.compose.ui.graphics.Color
 import ru.iblinov.yc2024.common.model.DrawnPathType
+import ru.iblinov.yc2024.common.model.NonEmptyFramesCollection
 import ru.iblinov.yc2024.common.theme.AppColors
 
 data class MainState(
@@ -11,6 +12,7 @@ data class MainState(
     val palette: Palette = Palette(),
     val speed: Speed = Speed(),
     val areNonPlayingButtonsActive: Boolean = true,
+    val isChooseFrameVisible: Boolean = false,
 ) {
     data class DrawingToolbarButtons(
         val isCancelButtonActive: Boolean = false,
@@ -88,5 +90,14 @@ sealed interface MainAction {
         data class StepIndexChosen(
             val index: Int,
         ) : ChooseSpeed
+    }
+
+    sealed interface ChooseFrame : MainAction {
+
+        data object Dismissed : ChooseFrame
+
+        data class FrameChosen(
+            val node: NonEmptyFramesCollection.Node
+        ) : ChooseFrame
     }
 }

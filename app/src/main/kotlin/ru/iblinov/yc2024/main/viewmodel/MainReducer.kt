@@ -120,4 +120,12 @@ object MainReducer {
     ) = copy(
         drawnPathType = type
     )
+
+    fun MainState.chooseFrameShown() = copy(
+        isChooseFrameVisible = true,
+    )
+
+    fun MainState.chooseFrameHidden() = copy(
+        isChooseFrameVisible = false,
+    )
 }

@@ -13,7 +13,7 @@ class NonEmptyFramesCollection(
 
     fun getCurrentNode() = currentNode
 
-    suspend fun withSavedNode(
+    suspend fun asyncWithSavedNode(
         onFinally: () -> Unit,
         block: suspend () -> Unit,
     ) {
@@ -32,15 +32,6 @@ class NonEmptyFramesCollection(
 
     fun updateToNextOrFirst() {
         currentNode = currentNode.next ?: firstNode
-    }
-
-    /**
-     * @return true в случае успешного обновления до следующего элемента
-     */
-    fun updateToNext(): Boolean {
-        val next = currentNode.next ?: return false
-        currentNode = next
-        return true
     }
 
     fun removeCurrent(createIfEmpty: () -> FrameData) {
@@ -72,7 +63,9 @@ class NonEmptyFramesCollection(
 
     fun hasMoreThanOneNode(): Boolean = firstNode.next != null
 
-    private fun safeUpdateCurrentNode(node: Node) {
+    fun withIterator() = FramesIterator(firstNode)
+
+    fun safeUpdateCurrentNode(node: Node) {
         val next = node.next
         val previous = node.previous
         require(
@@ -97,5 +90,28 @@ class NonEmptyFramesCollection(
                 next = null
             )
         }
+    }
+
+    class FramesIterator(
+        private val firstNode: Node
+    ) : Iterable<Node> {
+
+        override fun iterator(): Iterator<Node> = object : Iterator<Node> {
+            private var current = firstNode
+            private var wasFirst = false
+
+            override fun hasNext(): Boolean = !wasFirst || current.next != null
+
+            override fun next(): Node {
+                if (!wasFirst) {
+                    wasFirst = true
+                    return current
+                }
+                val next = requireNotNull(current.next)
+                current = next
+                return next
+            }
+        }
+
     }
 }

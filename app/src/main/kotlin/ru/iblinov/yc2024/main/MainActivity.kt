@@ -32,6 +32,7 @@ class MainActivity : ComponentActivity() {
             val state by viewModel.state.collectAsStateWithLifecycle()
             MainScreenContent(
                 state = state,
+                allFramesIterator = { viewModel.allFramesIterator },
                 drawnPaths = { viewModel.drawnPaths },
                 onAction = viewModel::onAction,
             )

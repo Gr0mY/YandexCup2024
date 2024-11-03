@@ -26,14 +26,13 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PointMode
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultBlendMode
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.withSaveLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import ru.iblinov.yc2024.R
 import ru.iblinov.yc2024.common.model.DrawnPath
@@ -69,7 +68,7 @@ fun ColumnScope.DrawingCanvas(
                 detectTapGestures(
                     onPress = {
                         val type = updatedDrawnPathType.value
-                        currentDrawnPath = createDrawnPath(it, type, updatedColor)
+                        currentDrawnPath = createDrawnPath(it, type, updatedColor, size)
                         updatedDrawnPaths.value() += currentDrawnPath
 
                         counterHack.longValue++
@@ -88,31 +87,12 @@ fun ColumnScope.DrawingCanvas(
                 )
             }
             .drawWithContent {
-
                 counterHack.longValue
 
                 drawContent()
 
-                drawContext.canvas.withSaveLayer(this.size.toRect(), paintForSave) {
-                    updatedDrawnPaths
-                        .value()
-                        .forEach {
-                            drawPoints(
-                                points = it.startPointAsList,
-                                pointMode = PointMode.Points,
-                                cap = StrokeCap.Round,
-                                color = it.color,
-                                strokeWidth = it.stroke.width,
-                                blendMode = it.blendMode
-                            )
-
-                            drawPath(
-                                path = it.path,
-                                color = it.color,
-                                style = it.stroke,
-                                blendMode = it.blendMode
-                            )
-                        }
+                drawContext.canvas.withSaveLayer(size.toRect(), paintForSave) {
+                    drawPaths(updatedDrawnPaths.value())
                 }
             }
     ) {
@@ -128,7 +108,8 @@ fun ColumnScope.DrawingCanvas(
 private fun createDrawnPath(
     offset: Offset,
     type: DrawnPathType,
-    updatedColor: State<Color>
+    updatedColor: State<Color>,
+    canvasSize: IntSize
 ): DrawnPath {
     val startPointAsList = listOf(offset)
     val path = Path().apply { moveTo(offset.x, offset.y) }
@@ -137,18 +118,18 @@ private fun createDrawnPath(
             startPointAsList = startPointAsList,
             path = path,
             color = updatedColor.value,
-            type = type,
             blendMode = DefaultBlendMode,
-            stroke = Stroke(width = DEFAULT_PENCIL_WIDTH)
+            stroke = Stroke(width = DEFAULT_PENCIL_WIDTH),
+            canvasSize = canvasSize,
         )
 
         DrawnPathType.ERASE -> DrawnPath(
             startPointAsList = startPointAsList,
             path = path,
             color = Color.Transparent,
-            type = type,
             blendMode = BlendMode.Clear,
-            stroke = Stroke(width = DEFAULT_ERASE_WIDTH)
+            stroke = Stroke(width = DEFAULT_ERASE_WIDTH),
+            canvasSize = canvasSize,
         )
     }
 }

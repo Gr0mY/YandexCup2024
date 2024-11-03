@@ -19,6 +19,8 @@ import ru.iblinov.yc2024.main.viewmodel.MainReducer.activePlaying
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.additionalColorsClicked
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.cancelButtonClicked
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.chooseColorClicked
+import ru.iblinov.yc2024.main.viewmodel.MainReducer.chooseFrameHidden
+import ru.iblinov.yc2024.main.viewmodel.MainReducer.chooseFrameShown
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.chooseSpeedHidden
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.chooseSpeedShown
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.clearCancelRedoButtons
@@ -41,6 +43,8 @@ class MainViewModel : ViewModel() {
         get() = mutableState.asStateFlow()
 
     private val allFramesData = NonEmptyFramesCollection(createFrameData())
+    val allFramesIterator: NonEmptyFramesCollection.FramesIterator
+        get() = allFramesData.withIterator()
 
     val drawnPaths: MutableList<DrawnPath>
         get() = allFramesData.getCurrentNode().value.drawnPaths
@@ -55,6 +59,7 @@ class MainViewModel : ViewModel() {
         MainAction.OnDragEnd -> onDragEnd()
         is MainAction.Palette -> onAction(action)
         is MainAction.ChooseSpeed -> onAction(action)
+        is MainAction.ChooseFrame -> onAction(action)
         is MainAction.ControlPanel -> onAction(action)
     }
 
@@ -63,7 +68,7 @@ class MainViewModel : ViewModel() {
         MainAction.DrawingToolbar.RedoButtonClicked -> redoButtonClicked()
         MainAction.DrawingToolbar.BinButtonClicked -> binButtonClicked()
         MainAction.DrawingToolbar.FilePlusButtonClicked -> filePlusButtonClicked()
-        MainAction.DrawingToolbar.LayersButtonClicked -> {}
+        MainAction.DrawingToolbar.LayersButtonClicked -> updateState { chooseFrameShown() }
         MainAction.DrawingToolbar.PlayPauseButtonClicked -> startOrStopPlaying()
         MainAction.DrawingToolbar.SpeedClicked -> updateState { chooseSpeedShown() }
     }
@@ -80,9 +85,13 @@ class MainViewModel : ViewModel() {
         MainAction.ChooseSpeed.Dismissed -> updateState { chooseSpeedHidden() }
     }
 
+    private fun onAction(action: MainAction.ChooseFrame) = when (action) {
+        MainAction.ChooseFrame.Dismissed -> updateState { chooseFrameHidden() }
+        is MainAction.ChooseFrame.FrameChosen -> frameChosen(action)
+    }
+
     private fun onAction(action: MainAction.ControlPanel) = when (action) {
         MainAction.ControlPanel.PencilClicked -> pencilClicked()
-
         MainAction.ControlPanel.EraseClicked -> eraseClicked()
     }
 
@@ -165,7 +174,7 @@ class MainViewModel : ViewModel() {
 
         playingJob = viewModelScope.launch {
             updateState { activePlaying() }
-            allFramesData.withSavedNode(
+            allFramesData.asyncWithSavedNode(
                 onFinally = { updateState { updateSignal() } }
             ) {
                 val timeForOneFrame = millisInSecond / state.value.speed.playingFps
@@ -180,6 +189,14 @@ class MainViewModel : ViewModel() {
                     updateState { updateSignal() }
                 }
             }
+        }
+    }
+
+    private fun frameChosen(action: MainAction.ChooseFrame.FrameChosen) {
+        allFramesData.safeUpdateCurrentNode(action.node)
+        updateState {
+            updateSignal()
+                .chooseFrameHidden()
         }
     }
 
