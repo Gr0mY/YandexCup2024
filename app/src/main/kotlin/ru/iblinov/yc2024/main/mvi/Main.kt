@@ -11,7 +11,7 @@ data class MainState(
     val drawnPathType: DrawnPathType = DrawnPathType.PENCIL,
     val palette: Palette = Palette(),
     val speed: Speed = Speed(),
-    val areNonPlayingButtonsActive: Boolean = true,
+    val canDraw: Boolean = true,
     val isChooseFrameVisible: Boolean = false,
 ) {
     data class DrawingToolbarButtons(

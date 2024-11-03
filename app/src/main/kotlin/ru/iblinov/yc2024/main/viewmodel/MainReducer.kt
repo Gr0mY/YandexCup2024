@@ -86,7 +86,7 @@ object MainReducer {
             isPlayButtonActive = false,
             isPauseButtonActive = true,
         ),
-        areNonPlayingButtonsActive = false,
+        canDraw = false,
     )
 
     fun MainState.stoppedPlaying() = copy(
@@ -94,7 +94,7 @@ object MainReducer {
             isPlayButtonActive = true,
             isPauseButtonActive = false,
         ),
-        areNonPlayingButtonsActive = true,
+        canDraw = true,
     )
 
     fun MainState.chooseSpeedShown() = copy(

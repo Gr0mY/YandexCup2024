@@ -44,6 +44,7 @@ private const val DEFAULT_ERASE_WIDTH = 100f
 
 @Composable
 fun ColumnScope.DrawingCanvas(
+    canDraw: Boolean,
     drawnPaths: () -> MutableList<DrawnPath>,
     drawnPathType: DrawnPathType,
     color: Color,
@@ -54,6 +55,7 @@ fun ColumnScope.DrawingCanvas(
 
     val paintForSave = remember { Paint() }
 
+    val updatedCanDraw = rememberUpdatedState(canDraw)
     val updatedColor = rememberUpdatedState(color)
     val updatedDrawnPaths = rememberUpdatedState(drawnPaths)
     val updatedDrawnPathType = rememberUpdatedState(drawnPathType)
@@ -67,6 +69,8 @@ fun ColumnScope.DrawingCanvas(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = {
+                        if (!updatedCanDraw.value) return@detectTapGestures
+
                         val type = updatedDrawnPathType.value
                         currentDrawnPath = createDrawnPath(it, type, updatedColor, size)
                         updatedDrawnPaths.value() += currentDrawnPath
@@ -78,9 +82,13 @@ fun ColumnScope.DrawingCanvas(
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragEnd = {
+                        if (!updatedCanDraw.value) return@detectDragGestures
+
                         onAction(MainAction.OnDragEnd)
                     },
                     onDrag = { change, _ ->
+                        if (!updatedCanDraw.value) return@detectDragGestures
+
                         currentDrawnPath.path.lineTo(change.position.x, change.position.y)
                         counterHack.longValue++
                     }

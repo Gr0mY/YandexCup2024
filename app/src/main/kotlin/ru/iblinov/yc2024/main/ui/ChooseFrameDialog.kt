@@ -70,11 +70,8 @@ fun ChooseFrameDialog(
                 items(
                     items = allFramesIterator().toList()
                 ) { node ->
-//                    var boxSize by remember { mutableStateOf<IntSize?>(null) }
-
                     Box(
                         modifier = frameBoxModifier
-//                            .onSizeChanged { boxSize = it }
                             .drawBehind {
                                 val drawnPaths = node.value.drawnPaths
                                     .map {

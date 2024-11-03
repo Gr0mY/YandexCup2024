@@ -58,10 +58,11 @@ private fun CommonScaffold(
 
             DrawingToolbar(
                 buttons = state.drawingToolbarButtons,
-                areNonPlayingButtonsActive = state.areNonPlayingButtonsActive,
+                areNonPlayingButtonsActive = state.canDraw,
                 onAction = onAction
             )
             DrawingCanvas(
+                canDraw = state.canDraw,
                 drawnPaths = drawnPaths,
                 color = state.palette.selectedColor,
                 counterHack = counterHack,
@@ -70,7 +71,7 @@ private fun CommonScaffold(
             )
             ControlPanel(
                 currentColor = state.palette.selectedColor,
-                areNonPlayingButtonsActive = state.areNonPlayingButtonsActive,
+                areNonPlayingButtonsActive = state.canDraw,
                 drawnPathType = state.drawnPathType,
                 getTopOfControlPanel = { topOfControlPanel.floatValue = it },
                 onAction = onAction
