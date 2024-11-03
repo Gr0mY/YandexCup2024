@@ -1,11 +1,13 @@
 package ru.iblinov.yc2024.main.mvi
 
 import androidx.compose.ui.graphics.Color
+import ru.iblinov.yc2024.common.model.DrawnPathType
 import ru.iblinov.yc2024.common.theme.AppColors
 
 data class MainState(
     val drawingToolbarButtons: DrawingToolbarButtons = DrawingToolbarButtons(),
     val updateCanvasSignal: Long = Long.MIN_VALUE,
+    val drawnPathType: DrawnPathType = DrawnPathType.PENCIL,
     val palette: Palette = Palette(),
     val speed: Speed = Speed(),
     val areNonPlayingButtonsActive: Boolean = true,
@@ -57,6 +59,13 @@ sealed interface MainAction {
         data object SpeedClicked : DrawingToolbar
 
         data object PlayPauseButtonClicked : DrawingToolbar
+    }
+
+    sealed interface ControlPanel : MainAction {
+
+        data object PencilClicked : ControlPanel
+
+        data object EraseClicked : ControlPanel
     }
 
     sealed interface Palette : MainAction {

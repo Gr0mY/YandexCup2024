@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.iblinov.yc2024.common.model.DrawnPath
+import ru.iblinov.yc2024.common.model.DrawnPathType
 import ru.iblinov.yc2024.common.model.FrameData
 import ru.iblinov.yc2024.common.model.NonEmptyFramesCollection
 import ru.iblinov.yc2024.main.mvi.MainAction
@@ -25,10 +26,12 @@ import ru.iblinov.yc2024.main.viewmodel.MainReducer.closePalette
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.colorChosen
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.onDragEnd
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.redoButtonClicked
+import ru.iblinov.yc2024.main.viewmodel.MainReducer.selectedDrawnPathType
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.speedIndex
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.stoppedPlaying
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.updateCancelRedoButtons
 import ru.iblinov.yc2024.main.viewmodel.MainReducer.updatePlayButton
+import ru.iblinov.yc2024.main.viewmodel.MainReducer.updateSignal
 import java.util.concurrent.TimeUnit
 
 class MainViewModel : ViewModel() {
@@ -52,6 +55,7 @@ class MainViewModel : ViewModel() {
         MainAction.OnDragEnd -> onDragEnd()
         is MainAction.Palette -> onAction(action)
         is MainAction.ChooseSpeed -> onAction(action)
+        is MainAction.ControlPanel -> onAction(action)
     }
 
     private fun onAction(action: MainAction.DrawingToolbar) = when (action) {
@@ -74,6 +78,26 @@ class MainViewModel : ViewModel() {
     private fun onAction(action: MainAction.ChooseSpeed) = when (action) {
         is MainAction.ChooseSpeed.StepIndexChosen -> updateState { speedIndex(action.index) }
         MainAction.ChooseSpeed.Dismissed -> updateState { chooseSpeedHidden() }
+    }
+
+    private fun onAction(action: MainAction.ControlPanel) = when (action) {
+        MainAction.ControlPanel.PencilClicked -> pencilClicked()
+
+        MainAction.ControlPanel.EraseClicked -> eraseClicked()
+    }
+
+    private fun pencilClicked() {
+        updateState {
+            updateSignal()
+                .selectedDrawnPathType(DrawnPathType.PENCIL)
+        }
+    }
+
+    private fun eraseClicked() {
+        updateState {
+            updateSignal()
+                .selectedDrawnPathType(DrawnPathType.ERASE)
+        }
     }
 
     private fun cancelButtonClicked() {
@@ -162,8 +186,6 @@ class MainViewModel : ViewModel() {
     private fun isPlayButtonActive() = allFramesData.hasMoreThanOneNode()
 
     private fun updateState(body: MainState.() -> MainState) = mutableState.update(body)
-
-    private fun MainState.updateSignal() = copy(updateCanvasSignal = updateCanvasSignal.inc())
 
     private fun createFrameData() = FrameData(
         drawnPaths = mutableListOf(),

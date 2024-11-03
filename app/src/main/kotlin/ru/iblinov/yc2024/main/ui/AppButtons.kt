@@ -40,10 +40,11 @@ fun ColorButton(
 @Composable
 fun AppIconButton(
     isActive: Boolean = true,
+    isSelected: Boolean = false,
     @DrawableRes
     drawableRes: Int,
     contentDescription: String,
-    tint: Color = toolbarButtonTint(isActive),
+    tint: Color = toolbarButtonTint(isActive, isSelected),
     onClick: () -> Unit,
 ) {
     Icon(
@@ -60,5 +61,10 @@ fun AppIconButton(
 }
 
 private fun toolbarButtonTint(
-    isPauseButtonActive: Boolean,
-): Color = if (isPauseButtonActive) AppColors.White else AppColors.ButtonInactive
+    isActive: Boolean,
+    isSelected: Boolean,
+): Color = when {
+    !isActive -> AppColors.ButtonInactive
+    isSelected -> AppColors.GreenSelected
+    else -> AppColors.White
+}

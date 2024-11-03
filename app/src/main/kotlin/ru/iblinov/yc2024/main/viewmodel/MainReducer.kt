@@ -2,9 +2,14 @@ package ru.iblinov.yc2024.main.viewmodel
 
 import androidx.compose.ui.graphics.Color
 import ru.iblinov.yc2024.common.model.DrawnPath
+import ru.iblinov.yc2024.common.model.DrawnPathType
 import ru.iblinov.yc2024.main.mvi.MainState
 
 object MainReducer {
+
+    fun MainState.updateSignal() = copy(
+        updateCanvasSignal = updateCanvasSignal.inc()
+    )
 
     fun MainState.cancelButtonClicked(drawnPaths: MutableList<DrawnPath>) = copy(
         drawingToolbarButtons = drawingToolbarButtons.copy(
@@ -108,5 +113,11 @@ object MainReducer {
         speed = speed.copy(
             selectedStepIndex = index
         )
+    )
+
+    fun MainState.selectedDrawnPathType(
+        type: DrawnPathType
+    ) = copy(
+        drawnPathType = type
     )
 }

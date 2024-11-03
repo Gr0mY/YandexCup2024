@@ -53,11 +53,13 @@ fun MainScreenContent(
                     drawnPaths = drawnPaths,
                     color = state.palette.selectedColor,
                     counterHack = counterHack,
+                    drawnPathType = state.drawnPathType,
                     onAction = onAction,
                 )
                 ControlPanel(
                     currentColor = state.palette.selectedColor,
                     areNonPlayingButtonsActive = state.areNonPlayingButtonsActive,
+                    drawnPathType = state.drawnPathType,
                     getTopOfControlPanel = { topOfControlPanel.floatValue = it },
                     onAction = onAction
                 )
