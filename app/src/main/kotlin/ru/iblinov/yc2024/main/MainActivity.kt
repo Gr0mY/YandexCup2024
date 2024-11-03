@@ -33,6 +33,7 @@ class MainActivity : ComponentActivity() {
             MainScreenContent(
                 state = state,
                 allFramesIterator = { viewModel.allFramesIterator },
+                previousDrawnPaths = { viewModel.previousDrawnPaths },
                 drawnPaths = { viewModel.drawnPaths },
                 onAction = viewModel::onAction,
             )

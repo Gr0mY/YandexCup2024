@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultBlendMode
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.withSaveLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -45,6 +46,7 @@ private const val DEFAULT_ERASE_WIDTH = 100f
 @Composable
 fun ColumnScope.DrawingCanvas(
     canDraw: Boolean,
+    previousDrawnPaths: () -> MutableList<DrawnPath>?,
     drawnPaths: () -> MutableList<DrawnPath>,
     drawnPathType: DrawnPathType,
     color: Color,
@@ -58,6 +60,7 @@ fun ColumnScope.DrawingCanvas(
     val updatedCanDraw = rememberUpdatedState(canDraw)
     val updatedColor = rememberUpdatedState(color)
     val updatedDrawnPaths = rememberUpdatedState(drawnPaths)
+    val updatedPreviousDrawnPathType = rememberUpdatedState(previousDrawnPaths)
     val updatedDrawnPathType = rememberUpdatedState(drawnPathType)
 
     Box(
@@ -110,6 +113,21 @@ fun ColumnScope.DrawingCanvas(
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
+        if (canDraw) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer { alpha = 0.3f }
+                    .drawWithContent {
+                        counterHack.longValue
+                        drawContext.canvas.withSaveLayer(size.toRect(), paintForSave) {
+                            updatedPreviousDrawnPathType
+                                .value()
+                                ?.let(::drawPaths)
+                        }
+                    }
+            )
+        }
     }
 }
 

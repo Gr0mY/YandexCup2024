@@ -46,6 +46,9 @@ class MainViewModel : ViewModel() {
     val allFramesIterator: NonEmptyFramesCollection.FramesIterator
         get() = allFramesData.withIterator()
 
+    val previousDrawnPaths: MutableList<DrawnPath>?
+        get() = allFramesData.getCurrentNode().previous?.value?.drawnPaths
+
     val drawnPaths: MutableList<DrawnPath>
         get() = allFramesData.getCurrentNode().value.drawnPaths
 

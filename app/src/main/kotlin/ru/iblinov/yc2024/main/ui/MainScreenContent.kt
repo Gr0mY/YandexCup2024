@@ -20,11 +20,17 @@ import ru.iblinov.yc2024.main.mvi.MainState
 fun MainScreenContent(
     state: MainState,
     allFramesIterator: () -> NonEmptyFramesCollection.FramesIterator,
+    previousDrawnPaths: () -> MutableList<DrawnPath>?,
     drawnPaths: () -> MutableList<DrawnPath>,
     onAction: (MainAction) -> Unit,
 ) {
     LivePicturesTheme {
-        CommonScaffold(state, drawnPaths, onAction)
+        CommonScaffold(
+            state = state,
+            previousDrawnPaths = previousDrawnPaths,
+            drawnPaths = drawnPaths,
+            onAction = onAction
+        )
 
         val speed = state.speed
         if (speed.isChooseSpeedVisible) {
@@ -43,6 +49,7 @@ fun MainScreenContent(
 @Composable
 private fun CommonScaffold(
     state: MainState,
+    previousDrawnPaths: () -> MutableList<DrawnPath>?,
     drawnPaths: () -> MutableList<DrawnPath>,
     onAction: (MainAction) -> Unit
 ) {
@@ -63,6 +70,7 @@ private fun CommonScaffold(
             )
             DrawingCanvas(
                 canDraw = state.canDraw,
+                previousDrawnPaths = previousDrawnPaths,
                 drawnPaths = drawnPaths,
                 color = state.palette.selectedColor,
                 counterHack = counterHack,
