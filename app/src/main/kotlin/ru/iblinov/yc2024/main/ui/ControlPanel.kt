@@ -14,7 +14,7 @@ import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.unit.dp
 import ru.iblinov.yc2024.R
 import ru.iblinov.yc2024.common.model.DrawnPathType
-import ru.iblinov.yc2024.common.theme.AppColors
+import ru.iblinov.yc2024.common.theme.LocalAppColors
 import ru.iblinov.yc2024.main.mvi.MainAction
 
 @Composable
@@ -52,7 +52,7 @@ fun ControlPanel(
         ColorButton(
             color = currentColor,
             isActive = areNonPlayingButtonsActive,
-            borderColor = AppColors.GreenSelected,
+            borderColor = LocalAppColors.current.buttonSelected,
             onAction = onAction
         )
     }

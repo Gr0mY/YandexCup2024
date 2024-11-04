@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.copy
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -28,19 +27,13 @@ import androidx.compose.ui.unit.toIntSize
 import androidx.compose.ui.window.Dialog
 import ru.iblinov.yc2024.common.model.DrawnPath
 import ru.iblinov.yc2024.common.model.NonEmptyFramesCollection
-import ru.iblinov.yc2024.common.theme.AppColors
+import ru.iblinov.yc2024.common.theme.LocalAppColors
 import ru.iblinov.yc2024.main.mvi.MainAction
-
-val containerModifier = Modifier
-    .clip(RoundedCornerShape(20.dp))
-    .background(Color(0xFF888888))
-    .padding(16.dp)
 
 val frameBoxModifier = Modifier
     .aspectRatio(1f)
     .padding(4.dp)
     .clip(RoundedCornerShape(4.dp))
-    .background(Color(0x88FFFFFF))
 
 val verticalGridModifier = Modifier.widthIn(max = 300.dp)
 
@@ -53,13 +46,16 @@ fun ChooseFrameDialog(
         onDismissRequest = { onAction(MainAction.ChooseFrame.Dismissed) }
     ) {
         Column(
-            modifier = containerModifier,
+            modifier = Modifier
+                .clip(RoundedCornerShape(20.dp))
+                .background(LocalAppColors.current.dialogBackground)
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 // todo to res
                 text = "Выбор кадра",
-                color = AppColors.White
+                color = LocalAppColors.current.primaryTextColor
             )
             SpacerHeight16()
 
@@ -72,6 +68,7 @@ fun ChooseFrameDialog(
                 ) { node ->
                     Box(
                         modifier = frameBoxModifier
+                            .background(LocalAppColors.current.dialogItemBackground)
                             .drawBehind {
                                 val drawnPaths = node.value.drawnPaths
                                     .map {

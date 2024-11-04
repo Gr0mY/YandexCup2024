@@ -11,11 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import ru.iblinov.yc2024.common.theme.AppColors
+import ru.iblinov.yc2024.common.theme.LocalAppColors
 import ru.iblinov.yc2024.main.mvi.MainAction
 import ru.iblinov.yc2024.main.mvi.MainState
 import kotlin.math.roundToInt
@@ -31,19 +30,20 @@ fun ChooseSpeedDialog(
         Column(
             modifier = Modifier
                 .clip(RoundedCornerShape(20.dp))
-                .background(Color(0x55000000))
+                .background(LocalAppColors.current.dialogBackground)
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            val primaryTextColor = LocalAppColors.current.primaryTextColor
             Text(
                 // todo to res
                 text = "Скорость (кадров в секунду)",
-                color = AppColors.White
+                color = primaryTextColor
             )
             SpacerHeight16()
             Text(
                 text = speed.playingFps.toString(),
-                color = AppColors.White,
+                color = primaryTextColor,
                 fontSize = 32.sp,
             )
             SpacerHeight8()

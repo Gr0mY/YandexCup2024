@@ -17,20 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import ru.iblinov.yc2024.R
-import ru.iblinov.yc2024.common.theme.AppColors
+import ru.iblinov.yc2024.common.theme.LocalAppColors
 import ru.iblinov.yc2024.main.mvi.MainAction
 import ru.iblinov.yc2024.main.mvi.MainState
-
-private val paletteGroupModifier = Modifier
-    .clip(RoundedCornerShape(4.dp))
-    .border(1.dp, Color(0x29555454))
-    .blur(20.dp)
-    .background(Color(0x24000000))
-    .clickable { }
 
 @Composable
 fun Palette(
@@ -65,10 +57,17 @@ private fun AdditionalColors(
     palette: MainState.Palette
 ) {
     Box {
+        val appColors = LocalAppColors.current
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .then(paletteGroupModifier),
+                .then(
+                    Modifier
+                        .clip(RoundedCornerShape(4.dp))
+                        .border(1.dp, appColors.paletteGroupBorder)
+                        .blur(20.dp)
+                        .background(appColors.paletteGroupBackground)
+                        .clickable { }),
         )
         Column(
             modifier = Modifier.padding(16.dp),
@@ -103,10 +102,17 @@ private fun CommonButtons(
     onAction: (MainAction) -> Unit
 ) {
     Box {
+        val appColors = LocalAppColors.current
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .then(paletteGroupModifier),
+                .then(
+                    Modifier
+                        .clip(RoundedCornerShape(4.dp))
+                        .border(1.dp, appColors.paletteGroupBorder)
+                        .blur(20.dp)
+                        .background(appColors.paletteGroupBackground)
+                        .clickable { /* no op */ }),
         )
         Row(
             modifier = Modifier.padding(16.dp),
@@ -128,11 +134,12 @@ private fun AdditionalColorsButton(
     isChosen: Boolean,
     onAction: (MainAction) -> Unit
 ) {
+    val appColors = LocalAppColors.current
     AppIconButton(
         isActive = true,
         drawableRes = R.drawable.color__palette,
         contentDescription = "Другие цвета",
-        tint = if (isChosen) AppColors.GreenSelected else AppColors.White,
+        tint = if (isChosen) appColors.buttonSelected else appColors.buttonActive,
         onClick = { onAction(MainAction.Palette.AdditionalColorsClicked) }
     )
 }

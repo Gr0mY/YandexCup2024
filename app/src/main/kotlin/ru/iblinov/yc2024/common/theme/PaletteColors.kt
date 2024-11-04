@@ -2,19 +2,7 @@ package ru.iblinov.yc2024.common.theme
 
 import androidx.compose.ui.graphics.Color
 
-object AppColors {
-    val Purple80 = Color(0xFFD0BCFF)
-    val PurpleGrey80 = Color(0xFFCCC2DC)
-    val Pink80 = Color(0xFFEFB8C8)
-
-    val Purple40 = Color(0xFF6650a4)
-    val PurpleGrey40 = Color(0xFF625b71)
-    val Pink40 = Color(0xFF7D5260)
-
-    val Black = Color(0xFF000000)
-    val White = Color(0xFFFFFFFF)
-    val ButtonInactive = Color(0xFF8B8B8B)
-    val GreenSelected = Color(0xFFA8DB10)
+object PaletteColors {
 
     val CommonColors: List<Color> = listOf(
         Color(0xFFFFFFFF),

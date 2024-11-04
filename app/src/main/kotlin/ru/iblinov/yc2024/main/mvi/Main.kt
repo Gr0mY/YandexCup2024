@@ -3,7 +3,7 @@ package ru.iblinov.yc2024.main.mvi
 import androidx.compose.ui.graphics.Color
 import ru.iblinov.yc2024.common.model.DrawnPathType
 import ru.iblinov.yc2024.common.model.NonEmptyFramesCollection
-import ru.iblinov.yc2024.common.theme.AppColors
+import ru.iblinov.yc2024.common.theme.PaletteColors
 
 data class MainState(
     val drawingToolbarButtons: DrawingToolbarButtons = DrawingToolbarButtons(),
@@ -22,9 +22,9 @@ data class MainState(
     )
 
     data class Palette(
-        val selectedColor: Color = AppColors.CommonColors.last(),
-        val commonColors: List<Color> = AppColors.CommonColors,
-        val additionalColors: List<List<Color>> = AppColors.AdditionalColors,
+        val selectedColor: Color = PaletteColors.CommonColors.last(),
+        val commonColors: List<Color> = PaletteColors.CommonColors,
+        val additionalColors: List<List<Color>> = PaletteColors.AdditionalColors,
         val areCommonColorsVisible: Boolean = false,
         val areAdditionalColorsVisible: Boolean = false,
     )
@@ -32,12 +32,13 @@ data class MainState(
     data class Speed(
         val isChooseSpeedVisible: Boolean = false,
         val steps: List<Int> = availableFpsList,
-        val selectedStepIndex: Int = steps.lastIndex - 1,
+        val selectedStepIndex: Int = INITIAL_STEP_INDEX,
     ) {
         val playingFps: Int = steps[selectedStepIndex]
     }
 
     companion object {
+        private const val INITIAL_STEP_INDEX = 6
         private val availableFpsList = listOf(1, 2, 4, 8, 10, 20, 30, 60)
     }
 }

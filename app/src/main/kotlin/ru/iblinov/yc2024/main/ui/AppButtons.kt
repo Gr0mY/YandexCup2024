@@ -15,7 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import ru.iblinov.yc2024.common.theme.AppColors
+import ru.iblinov.yc2024.common.theme.LocalAppColors
 import ru.iblinov.yc2024.main.mvi.MainAction
 
 
@@ -60,11 +60,15 @@ fun AppIconButton(
     )
 }
 
+@Composable
 private fun toolbarButtonTint(
     isActive: Boolean,
     isSelected: Boolean,
-): Color = when {
-    !isActive -> AppColors.ButtonInactive
-    isSelected -> AppColors.GreenSelected
-    else -> AppColors.White
+): Color {
+    val appColors = LocalAppColors.current
+    return when {
+        !isActive -> appColors.buttonInactive
+        isSelected -> appColors.buttonSelected
+        else -> appColors.buttonActive
+    }
 }
