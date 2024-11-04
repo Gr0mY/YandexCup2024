@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ru.iblinov.yc2024.R
 import ru.iblinov.yc2024.main.mvi.MainAction
@@ -63,8 +64,7 @@ private fun CancelButton(
     AppIconButton(
         isActive = isCancelButtonActive,
         drawableRes = R.drawable.property_1_right_active,
-        // todo to res
-        contentDescription = "Отменить",
+        contentDescription = stringResource(R.string.cancel),
         onClick = { onAction(MainAction.DrawingToolbar.CancelButtonClicked) },
     )
 }
@@ -77,8 +77,7 @@ private fun RedoButton(
     AppIconButton(
         isActive = isRedoButtonActive,
         drawableRes = R.drawable.property_1_left_active,
-        // todo to res
-        contentDescription = "Повторить",
+        contentDescription = stringResource(R.string.repeat),
         onClick = { onAction(MainAction.DrawingToolbar.RedoButtonClicked) },
     )
 }
@@ -91,8 +90,7 @@ private fun DrawingToolbarCenterButtons(
     AppIconButton(
         isActive = areNonPlayingButtonsActive,
         drawableRes = R.drawable.bin,
-        // todo to res
-        contentDescription = "Удалить кадр",
+        contentDescription = stringResource(R.string.delete_frame),
         onClick = { onAction(MainAction.DrawingToolbar.BinButtonClicked) },
     )
 
@@ -101,8 +99,7 @@ private fun DrawingToolbarCenterButtons(
     AppIconButton(
         isActive = areNonPlayingButtonsActive,
         drawableRes = R.drawable.file_plus,
-        // todo to res
-        contentDescription = "Создать кадр",
+        contentDescription = stringResource(R.string.add_frame),
         onClick = { onAction(MainAction.DrawingToolbar.FilePlusButtonClicked) },
     )
 
@@ -111,8 +108,7 @@ private fun DrawingToolbarCenterButtons(
     AppIconButton(
         isActive = areNonPlayingButtonsActive,
         drawableRes = R.drawable.layers,
-        // todo to res
-        contentDescription = "Слои",
+        contentDescription = stringResource(R.string.layers),
         onClick = { onAction(MainAction.DrawingToolbar.LayersButtonClicked) },
     )
 }
@@ -125,8 +121,7 @@ private fun SpeedButton(
     AppIconButton(
         isActive = isActive,
         drawableRes = R.drawable.baseline_speed_32,
-        // todo to res
-        contentDescription = "Скорость воспроизведения",
+        contentDescription = stringResource(R.string.playing_speed),
         onClick = { onAction(MainAction.DrawingToolbar.SpeedClicked) },
     )
 }
@@ -143,8 +138,7 @@ private fun PlayPauseButton(
             isPauseButtonActive -> R.drawable.property_1_active_1
             else -> R.drawable.property_1_active
         },
-        // todo to res
-        contentDescription = "Запустить",
+        contentDescription = stringResource(R.string.play_stop),
         onClick = { onAction(MainAction.DrawingToolbar.PlayPauseButtonClicked) },
     )
 }

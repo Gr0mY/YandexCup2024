@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Живые картинки</string>
+    <string name="cancel">Отменить</string>
+    <string name="repeat">Повторить</string>
+    <string name="delete_frame">Удалить кадр</string>
+    <string name="add_frame">Создать кадр</string>
+    <string name="layers">Слои</string>
+    <string name="playing_speed">Скорость воспроизведения</string>
+    <string name="play_stop">Запустить/остановить</string>
+    <string name="pencil">Карандаш</string>
+    <string name="brush">Кисть</string>
+    <string name="erase">Ластик</string>
+    <string name="tools">Инструменты</string>
+    <string name="choose_frame">Выбор кадра</string>
+    <string name="speed_title">Скорость (кадров в секунду)</string>
+    <string name="ok">OK</string>
 </resources>

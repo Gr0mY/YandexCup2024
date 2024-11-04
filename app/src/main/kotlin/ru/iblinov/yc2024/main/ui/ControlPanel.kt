@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ru.iblinov.yc2024.R
 import ru.iblinov.yc2024.common.model.DrawnPathType
@@ -68,8 +69,7 @@ private fun PencilButton(
         isActive = isActive,
         isSelected = isSelected,
         drawableRes = R.drawable.pencil__edit__create,
-        // todo to res
-        contentDescription = "Карандаш",
+        contentDescription = stringResource(R.string.pencil),
         onClick = { onAction(MainAction.ControlPanel.PencilClicked) },
     )
 }
@@ -79,9 +79,7 @@ private fun BrushButton() {
     AppIconButton(
         isActive = false,
         drawableRes = R.drawable.brush__edit__create,
-        // todo to res
-        contentDescription = "Кисть",
-        // todo
+        contentDescription = stringResource(R.string.brush),
         onClick = { },
     )
 }
@@ -96,8 +94,7 @@ private fun EraseButton(
         isActive = isActive,
         isSelected = isSelected,
         drawableRes = R.drawable.erase,
-        // todo to res
-        contentDescription = "Ластик",
+        contentDescription = stringResource(R.string.erase),
         onClick = { onAction(MainAction.ControlPanel.EraseClicked) },
     )
 }
@@ -107,9 +104,7 @@ private fun InstrumentsButton() {
     AppIconButton(
         isActive = false,
         drawableRes = R.drawable.instruments,
-        // todo to res
-        contentDescription = "Инструменты",
-        // todo
+        contentDescription = stringResource(R.string.tools),
         onClick = { },
     )
 }

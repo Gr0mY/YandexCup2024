@@ -21,10 +21,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.copy
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toIntSize
 import androidx.compose.ui.window.Dialog
+import ru.iblinov.yc2024.R
 import ru.iblinov.yc2024.common.model.DrawnPath
 import ru.iblinov.yc2024.common.model.NonEmptyFramesCollection
 import ru.iblinov.yc2024.common.theme.LocalAppColors
@@ -53,8 +55,7 @@ fun ChooseFrameDialog(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                // todo to res
-                text = "Выбор кадра",
+                text = stringResource(R.string.choose_frame),
                 color = LocalAppColors.current.primaryTextColor
             )
             SpacerHeight16()
